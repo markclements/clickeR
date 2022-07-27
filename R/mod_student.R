@@ -37,7 +37,7 @@ mod_student_server <- function(id) {
                         label = "select one",
                         choices = c("a", "b", "c", "d")
                     ),
-                        actionButton(
+                      actionButton(
                         inputId = ns("submit_mc"),
                         label = "submit"
                     )
@@ -51,8 +51,8 @@ mod_student_server <- function(id) {
                             label = "enter words"
                         ),
                         actionButton(
-                        inputId = ns("submit_text"),
-                        label = "submit"
+                          inputId = ns("submit_text"),
+                          label = "submit"
                         )
                     )
         }
@@ -70,13 +70,14 @@ mod_student_server <- function(id) {
                                 ans = input$question_mc,
                                 time = Sys.time())
         }
-        df <- df |>
-        tibble::add_row(id = session$token,
-                        ans = input$question_mc,
-                        time = Sys.time()) #|>
-        #dplyr::filter(id %in% global_user_list())
+        else {
+          df <- df |>
+          tibble::add_row(id = session$token,
+                          ans = input$question_mc,
+                          time = Sys.time()) #|>
+          #dplyr::filter(id %in% global_user_list())
+        }
         answers_df(df)
-        print(answers_df())
     })
 
     observeEvent(input$submit_text, {

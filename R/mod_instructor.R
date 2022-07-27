@@ -10,20 +10,27 @@
 mod_instructor_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    h1("Instructor UI"),
-    shiny::selectInput(
-      inputId = ns("select_global"),
-      label = "select",
-      choices = c("multiple choice", "text")
+    col_6(
+      h1("Instructor UI"),
+      shiny::selectInput(
+        inputId = ns("select_global"),
+        label = "select",
+        choices = c("multiple choice", "text")
+      ),
+      shiny::actionButton(
+        inputId = ns("start"),
+        label = "Start"
+      ),
+      shiny::actionButton(
+        inputId = ns("stop"),
+        label = "Stop"
+      )
     ),
-    shiny::actionButton(
-      inputId = ns("start"),
-      label = "Start"
-    ),
-    shiny::actionButton(
-      inputId = ns("stop"),
-      label = "Stop"
-    )
+    col_6(
+      verbatimTextOutput(
+        ns("responses")
+      )
+    )  
   )
 }
 
@@ -48,7 +55,12 @@ mod_instructor_server <- function(id) {
     function() {
       isolate(student_ui(NULL)) ##resets UI if instructor is not connected
     }
-    )
+  )
+
+  
+  output$responses <- renderPrint({
+    answers_df() |> dim() 
+})
     
   })
 }
