@@ -19,6 +19,8 @@ run_app <- function(
       # Putting the resources here
       golem_add_external_resources(),
       home(),
+      student(),
+      instructor(),
       onStart = onStart,
       options = options,
       enableBookmarking = enableBookmarking,
