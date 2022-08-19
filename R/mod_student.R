@@ -8,10 +8,10 @@
 #'
 #' @importFrom shiny NS tagList
 mod_student_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    h1("Student UI"),
-    uiOutput(ns("question_ui"))
+  ns <- NS(id) # nolint
+  htmltools::tagList(
+    htmltools::h1("Student UI"),
+    shiny::uiOutput(ns("question_ui"))
   )
 }
 
@@ -26,16 +26,16 @@ mod_student_server <- function(id) {
         if (is.null(student_ui())) {
                 div(
                     id = "blank",
-                    h3("wait")
+                    h3("The next question will start soon")
                 )
         }
-        else if (student_ui() == "multiple choice") {
+        else if (student_ui()[1] == "multiple choice") {
                 div(
                     id = "mc",
                     radioButtons(
                         inputId = ns("question_mc"),
                         label = "select one",
-                        choices = c("a", "b", "c", "d")
+                        choices = LETTERS[1:student_ui()[[2]]]
                     ),
                       actionButton(
                         inputId = ns("submit_mc"),
@@ -43,7 +43,7 @@ mod_student_server <- function(id) {
                     )
                 )
         }
-        else if (student_ui() == "text") {
+        else if (student_ui()[1] == "text") {
                     div(
                         id = "question_text",
                         textAreaInput(
@@ -56,7 +56,7 @@ mod_student_server <- function(id) {
                         )
                     )
         }
-        else if (student_ui == "answer") {
+        else if (student_ui[1] == "answer") {
            #plotOutput("hist")
         }
     })
@@ -67,12 +67,14 @@ mod_student_server <- function(id) {
         if (is.null(df)) {
             df <- tibble::tibble(
                                 id = session$token,
+                                ques_id = ques_id(),
                                 ans = input$question_mc,
                                 time = Sys.time())
         }
         else {
           df <- df |>
           tibble::add_row(id = session$token,
+                          ques_id = ques_id(),
                           ans = input$question_mc,
                           time = Sys.time()) #|>
           #dplyr::filter(id %in% global_user_list())
@@ -86,20 +88,21 @@ mod_student_server <- function(id) {
         if (is.null(df)) {
             df <- tibble::tibble(
                                 id = session$token,
+                                ques_id = ques_id(),
                                 ans = input$question_text,
                                 time = Sys.time())
         }
         df <- df |>
         tibble::add_row(id = session$token,
+                        ques_id = ques_id(),
                         ans = input$question_text,
                         time = Sys.time()) #|>
         #dplyr::filter(id %in% global_user_list())
         answers_df(df)
-        print(answers_df())
     })
   })
 }
-  
+
 
 #' Page Functions
 #'
@@ -116,4 +119,4 @@ student <- function(id = "student", href = "/student") {
 }
 
 # Add this to the brochureApp call in R/studentrun_app.R
-# student()
+# student() # nolint

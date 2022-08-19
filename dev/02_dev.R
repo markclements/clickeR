@@ -26,7 +26,7 @@ golem::add_module(name = "instructor", with_test = TRUE, module_template = broch
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("helpers", with_test = TRUE)
-golem::add_utils("helpers", with_test = TRUE)
+golem::add_utils("global_param", with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

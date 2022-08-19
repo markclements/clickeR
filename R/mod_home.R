@@ -8,13 +8,10 @@
 #'
 #' @importFrom shiny NS tagList
 
-student_ui <- shiny::reactiveVal()
-answers_df <- shiny::reactiveVal()
-
 mod_home_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    h1("Hello {brochure}!")
+    h1("Audience Response System (V1)")
   )
 }
 
