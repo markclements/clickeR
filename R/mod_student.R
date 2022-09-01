@@ -10,7 +10,8 @@
 mod_student_ui <- function(id) {
   ns <- NS(id) # nolint
   htmltools::tagList(
-    htmltools::h1("Student UI"),
+   # htmltools::tags$script(src = "www/student.js"),
+    htmltools::h3("clickeR v1.0"),
     shiny::uiOutput(ns("question_ui"))
   )
 }
@@ -34,15 +35,15 @@ mod_student_server <- function(id) {
                     id = "mc",
                     radioButtons(
                         inputId = ns("question_mc"),
-                        label = "select one",
+                        label = "",
                         choices = LETTERS[1:student_ui()[[2]]]
                     ),
                       actionButton(
                         inputId = ns("submit_mc"),
                         label = "submit"
-                    ),
+                    ) |> tagAppendAttributes(onclick = "displayRadioValue()"),
                     div(
-                      id = "current_ans"
+                      id = "result"
                     )
                 )
         }
