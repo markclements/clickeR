@@ -40,6 +40,9 @@ mod_student_server <- function(id) {
                       actionButton(
                         inputId = ns("submit_mc"),
                         label = "submit"
+                    ),
+                    div(
+                      id = "current_ans"
                     )
                 )
         }

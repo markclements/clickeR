@@ -38,13 +38,22 @@ $( document ).ready(function() {
         }
       };
       
-      
       $('#instructor-start').click(function () { Clock.start(); });
       $('#pauseButton').click(function () { Clock.pause(); });
       $('#resumeButton').click(function () { Clock.resume(); });
       $('#instructor-stop').click(function () { Clock.reset(); });
       $('#restartButton').click(function () { Clock.restart(); });
-       
+      
+      $("#instructor-start").on( "click", function() {
+        $("#instructor-stop").css( "background-color", "red");
+      });
+      $("#instructor-stop").on( "click", function() {
+        $("#instructor-stop").css( "background-color", "#fff");
+      });
+      
+      $("#student-submit_mc").on( "click", function() {
+        $("#student-submit_mc").css( "background-color", "#fff");
+      });
 
 });
 
