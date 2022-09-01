@@ -58,7 +58,7 @@ mod_instructor_ui <- function(id) {
       )
     ),
     fluidRow(
-      shiny::verbatimTextOutput(
+      DT::dataTableOutput(
         ns("table")
       )
     )
@@ -154,7 +154,7 @@ mod_instructor_server <- function(id) {
       })
     })
 
-    output$table <- renderPrint({
+    output$table <- DT::renderDataTable({
       req(answers_df())
       answers_df() |>
         # dplyr::arrange(
@@ -166,7 +166,8 @@ mod_instructor_server <- function(id) {
         dplyr::arrange(
           dplyr::desc(time)
          ) |>
-        dplyr::mutate(id_time = paste0(ques_id, " - ", time))
+        dplyr::mutate(id_time = paste0(ques_id, " - ", time)) |>
+        DT::datatable()
     })
   })
 }
