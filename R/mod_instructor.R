@@ -56,6 +56,11 @@ mod_instructor_ui <- function(id) {
       fluidRow(
         shiny::plotOutput(ns("results"))
       )
+    ),
+    fluidRow(
+      shiny::verbatimTextOutput(
+        ns("table")
+      )
     )
   )
 }
@@ -116,14 +121,16 @@ mod_instructor_server <- function(id) {
          ) |>
         dplyr::mutate(id_time = paste0(ques_id, " - ", time)) |>
         dplyr::ungroup() |>
-        (\(.) split(.$ques_id, .$id_time))() -> choices
+        dplyr::select(id_time, ques_id) |>
+        tibble::deframe() -> choices
+        #(\(.) split(.$ques_id, .$id_time))() -> choices
 
       shiny::updateSelectInput(
         session = session,
         inputId = "ques_id",
-        choices = choices,
-        selected = choices[length(choices)]
+        choices = choices
       )
+      
     })
 
     observeEvent(input$plot, {
@@ -145,6 +152,21 @@ mod_instructor_server <- function(id) {
         ggplot2::aes(x = ans) +
         ggplot2::geom_histogram(stat = "count")
       })
+    })
+
+    output$table <- renderPrint({
+      req(answers_df())
+      answers_df() |>
+        # dplyr::arrange(
+        #   dplyr::desc(time)
+        # ) |>
+        dplyr::group_by(ques_id) |>
+        dplyr::slice_min(time, with_ties = FALSE) |>
+        dplyr::ungroup() |>
+        dplyr::arrange(
+          dplyr::desc(time)
+         ) |>
+        dplyr::mutate(id_time = paste0(ques_id, " - ", time))
     })
   })
 }
