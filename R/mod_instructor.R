@@ -56,11 +56,6 @@ mod_instructor_ui <- function(id) {
       fluidRow(
         shiny::plotOutput(ns("results"))
       )
-    ),
-    fluidRow(
-      DT::dataTableOutput(
-        ns("table")
-      )
     )
   )
 }
@@ -152,22 +147,6 @@ mod_instructor_server <- function(id) {
         ggplot2::aes(x = ans) +
         ggplot2::geom_histogram(stat = "count")
       })
-    })
-
-    output$table <- DT::renderDataTable({
-      req(answers_df())
-      answers_df() |>
-        # dplyr::arrange(
-        #   dplyr::desc(time)
-        # ) |>
-        dplyr::group_by(ques_id) |>
-        dplyr::slice_min(time, with_ties = FALSE) |>
-        dplyr::ungroup() |>
-        dplyr::arrange(
-          dplyr::desc(time)
-         ) |>
-        dplyr::mutate(id_time = paste0(ques_id, " - ", time)) |>
-        DT::datatable()
     })
   })
 }
