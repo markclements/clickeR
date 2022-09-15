@@ -10,8 +10,29 @@
 mod_student_ui <- function(id) {
   ns <- NS(id) # nolint
   htmltools::tagList(
+    tags$head(
+        HTML(
+          "
+          <script>
+          var socket_timeout_interval
+          var n = 0
+           $(document).on('shiny:connected', function(event) {
+           socket_timeout_interval = setInterval(function(){
+           Shiny.onInputChange('student-count', n++)
+           $('#student-keepAlive').hide();
+          }, 15000)
+          });
+          $(document).on('shiny:disconnected', function(event) {
+          clearInterval(socket_timeout_interval)
+          });
+          
+          </script>
+          "
+        )
+        ),
    # htmltools::tags$script(src = "www/student.js"),
-    htmltools::h3("clickeR v1.0"),
+    htmltools::h3("Welcome! "),
+    textOutput(ns("keepAlive")),
     shiny::uiOutput(ns("question_ui"))
   )
 }
@@ -22,6 +43,13 @@ mod_student_ui <- function(id) {
 mod_student_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+
+    session$allowReconnect("force")
+
+    output$keepAlive <- renderText({
+      req(input$count)
+      paste("keep alive ", input$count)
+    })
 
     output$question_ui <- shiny::renderUI({
         if (is.null(student_ui())) {
@@ -35,7 +63,7 @@ mod_student_server <- function(id) {
                     id = "mc",
                     radioButtons(
                         inputId = ns("question_mc"),
-                        label = "",
+                        label = "Choose the best answer",
                         choices = LETTERS[1:student_ui()[[2]]]
                     ),
                       actionButton(
